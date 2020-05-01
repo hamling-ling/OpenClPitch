@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C218A045245B9EAD00B72E9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C218A044245B9EAD00B72E9D /* main.cpp */; };
+		C218A04D245BA2C600B72E9D /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C218A04C245BA2C600B72E9D /* OpenCL.framework */; };
+		C218A053245BA33900B72E9D /* pitdet.cl in Sources */ = {isa = PBXBuildFile; fileRef = C218A04E245BA33800B72E9D /* pitdet.cl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,12 @@
 /* Begin PBXFileReference section */
 		C218A041245B9EAD00B72E9D /* OpenClPitch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenClPitch; sourceTree = BUILT_PRODUCTS_DIR; };
 		C218A044245B9EAD00B72E9D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C218A04C245BA2C600B72E9D /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCL.framework; path = System/Library/Frameworks/OpenCL.framework; sourceTree = SDKROOT; };
+		C218A04E245BA33800B72E9D /* pitdet.cl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.opencl; path = pitdet.cl; sourceTree = "<group>"; };
+		C218A050245BA33800B72E9D /* device_picker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = device_picker.hpp; sourceTree = "<group>"; };
+		C218A051245BA33800B72E9D /* util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = util.hpp; sourceTree = "<group>"; };
+		C218A052245BA33900B72E9D /* err_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = err_code.h; sourceTree = "<group>"; };
+		C218A055245BA43900B72E9D /* cl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cl.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C218A04D245BA2C600B72E9D /* OpenCL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +52,7 @@
 			children = (
 				C218A043245B9EAD00B72E9D /* OpenClPitch */,
 				C218A042245B9EAD00B72E9D /* Products */,
+				C218A04B245BA2C600B72E9D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +67,22 @@
 		C218A043245B9EAD00B72E9D /* OpenClPitch */ = {
 			isa = PBXGroup;
 			children = (
+				C218A055245BA43900B72E9D /* cl.hpp */,
+				C218A04E245BA33800B72E9D /* pitdet.cl */,
+				C218A050245BA33800B72E9D /* device_picker.hpp */,
+				C218A052245BA33900B72E9D /* err_code.h */,
+				C218A051245BA33800B72E9D /* util.hpp */,
 				C218A044245B9EAD00B72E9D /* main.cpp */,
 			);
 			path = OpenClPitch;
+			sourceTree = "<group>";
+		};
+		C218A04B245BA2C600B72E9D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C218A04C245BA2C600B72E9D /* OpenCL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C218A053245BA33900B72E9D /* pitdet.cl in Sources */,
 				C218A045245B9EAD00B72E9D /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
