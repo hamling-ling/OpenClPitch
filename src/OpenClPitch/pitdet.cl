@@ -6,7 +6,6 @@ __kernel void nsdf(
     __global float* out
                    )
 {
-
     const float eps        = 0.00001f;
     const int   global_id  = get_global_id(0);
     const int   N          = get_global_size(0);
