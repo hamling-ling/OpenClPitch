@@ -54,7 +54,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     const int          N = SAMPLE_SIZE_N;  // Real data sampling size
-    std::vector<float> h_x( N);            // N samples as an input
+    std::vector<osk_float_t> h_x( N);            // N samples as an input
 
     // frequency f Hz wave is sin(2*pi*f*t)
     // if f=440Hz, func is sin(2*pi*440*t)
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         cl::NDRange local(WORK_GROUP_SIZE);
         // order bit reversealy
 
-        std::vector<float>          h_out(N, 0);
+        std::vector<osk_float_t>          h_out(N, 0);
         std::vector<cl_int2> h_max(N/WORK_GROUP_SIZE);
 
         cl::Buffer d_x   = cl::Buffer(context, h_x.begin(), h_x.end(), true);

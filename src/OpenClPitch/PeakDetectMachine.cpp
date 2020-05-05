@@ -127,7 +127,7 @@ void GetKeyMaximums(MachineContext_t* ctx, float filter, PeakInfo_t* list, int l
 	*num = counter;
 }
 
- bool ParabolicInterp(MachineContext_t* ctx, int index, float* xs, int N, float* x)
+ bool ParabolicInterp(MachineContext_t* ctx, int index, osk_float_t* xs, int N, float* x)
 {
 	if (0 == index || N <= index + 1) {
 		return false;

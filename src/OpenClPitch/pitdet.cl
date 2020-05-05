@@ -1,9 +1,11 @@
+#pragma OPENCL EXTENSION cl_khr_fp16 : enable
+
 /**
  * FFT Main function
  */
 __kernel void nsdf(
-    __global float* x,
-    __global float* out
+    __global half* x,
+    __global half* out
                    )
 {
     const float eps        = 0.00001f;
@@ -15,12 +17,12 @@ __kernel void nsdf(
     float      m  = 0.0f;
 
     for(int i = 0; i < N - tau; i+=4) {
-        float4 a = vload4(0, x+i);
-        float4 b = vload4(0, x+i+tau);
+        half4 a = vload4(0, x+i);
+        half4 b = vload4(0, x+i+tau);
         r += dot(a, b);
 
-        float4 m4 = pow(a, 2.0f) + pow(b, 2.0f);
-        float2 m2 = m4.xy + m4.zw;
+        half4 m4 = pow(a, 2.0f) + pow(b, 2.0f);
+        half2 m2 = m4.xy + m4.zw;
         m += m2.x + m2.y;
     }
 

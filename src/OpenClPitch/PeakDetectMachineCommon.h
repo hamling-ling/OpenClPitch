@@ -9,6 +9,8 @@ extern "C" {
 
 #define	kKeyMax	16
 
+typedef __fp16 osk_float_t;
+
 typedef enum {
 	kStateSearchingBell,
 	kStateWalkingOnBell,
