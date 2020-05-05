@@ -50,17 +50,29 @@ extern double wtime();   // Returns time since some fixed past point (wtime.c)
 
 using namespace std;
 
+int16_t conv2int16(float val)
+{
+    // converting to int16
+    return val * 32768;
+}
+
+float conv2float(int16_t val)
+{
+    return ((float)val) / 32768.0f;
+}
 
 int main(int argc, char *argv[])
 {
     const int          N = SAMPLE_SIZE_N;  // Real data sampling size
-    std::vector<osk_float_t> h_x( N);            // N samples as an input
+    std::vector<int16_t> h_x( N);          // N samples as an input
 
     // frequency f Hz wave is sin(2*pi*f*t)
     // if f=440Hz, func is sin(2*pi*440*t)
     // for sampling freq 44.1 kHz, 1 samples is 1/(44.1*1000) sec
     for(int i = 0; i < N; i++) {
-        h_x[i] = sin(i * DELTA_T * 440.0 * 2.0 * M_PI);
+        float fval = sin(i * DELTA_T * 440.0 * 2.0 * M_PI);
+        // converting to 
+        h_x[i]     =  conv2int16(fval);
         //cout << "[" << i << "] = " << h_x[i] << endl;
     }
 
@@ -69,9 +81,12 @@ int main(int argc, char *argv[])
         float r = 0.0f;
         float m = 0.0f;
         for(int i = 0; i < N-tau; i++) {
-            r += h_x[i] * h_x[i+tau];
-            //cout << "[" << i << "] x [" << i+tau << "] = " << h_x[i] * h_x[i+tau] << endl;
-            m += pow(h_x[i],2.0f) + pow(h_x[i+tau],2.0f);
+            float h_x_i    = conv2float(h_x[i]);
+            float h_x_itau = conv2float(h_x[i+tau]);
+
+            r += h_x_i * h_x_itau;
+            //cout << "[" << i << "] x [" << i+tau << "] = " << h_x_i * h_x_itau << endl;
+            m += pow(h_x_i,2.0f) + pow(h_x_itau,2.0f);
         }
         float nsdf = 2.0f * r / (m + 0.00001f);
         //cout << "[" << tau << "] = " << nsdf << endl;

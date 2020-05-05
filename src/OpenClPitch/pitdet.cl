@@ -4,8 +4,8 @@
  * FFT Main function
  */
 __kernel void nsdf(
-    __global half* x,
-    __global half* out
+    __global short* x,
+    __global half*  out
                    )
 {
     const float eps        = 0.00001f;
@@ -16,9 +16,13 @@ __kernel void nsdf(
     float      r  = 0.0f;
     float      m  = 0.0f;
 
+    const half4 scale = (1.0f/32768.0f);
     for(int i = 0; i < N - tau; i+=4) {
-        half4 a = vload4(0, x+i);
-        half4 b = vload4(0, x+i+tau);
+        short4 sa = vload4(0, x+i);
+        short4 sb = vload4(0, x+i+tau);
+
+        half4 a = convert_half4(sa) * scale;;
+        half4 b = convert_half4(sb) * scale;
         r += dot(a, b);
 
         half4 m4 = pow(a, 2.0f) + pow(b, 2.0f);
