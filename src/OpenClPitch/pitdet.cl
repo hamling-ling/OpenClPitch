@@ -16,18 +16,19 @@ __kernel void nsdf(
     float      r  = 0.0f;
     float      m  = 0.0f;
 
-    const half4 scale = (1.0f/32768.0f);
+    const half8 scale = (1.0f/32768.0f);
     for(int i = 0; i < N - tau; i+=4) {
-        short4 sa = vload4(0, x+i);
-        short4 sb = vload4(0, x+i+tau);
+        short8 sa = vload8(0, x+i);
+        short8 sb = vload8(0, x+i+tau);
 
-        half4 a = convert_half4(sa) * scale;;
-        half4 b = convert_half4(sb) * scale;
-        r += dot(a, b);
+        half8 a = convert_half8(sa) * scale;;
+        half8 b = convert_half8(sb) * scale;
+        r += dot(a.s0123, b.s0123) + dot(a.s4567, b.s4567);
 
-        half4 m4 = pow(a, 2.0f) + pow(b, 2.0f);
-        half2 m2 = m4.xy + m4.zw;
-        m += m2.x + m2.y;
+        half8 mm8 = pow(a, 2.0f) + pow(b, 2.0f);
+        half4 mm4 = mm8.s0123 + mm8.s4567;
+        half2 mm2 = mm4.s01 + mm4.s23;
+        m += mm2.x + mm2.y;
     }
 
     // copy to ouput buffer for debug
