@@ -10,6 +10,7 @@
 		C218A045245B9EAD00B72E9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C218A044245B9EAD00B72E9D /* main.cpp */; };
 		C218A04D245BA2C600B72E9D /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C218A04C245BA2C600B72E9D /* OpenCL.framework */; };
 		C218A053245BA33900B72E9D /* pitdet.cl in Sources */ = {isa = PBXBuildFile; fileRef = C218A04E245BA33800B72E9D /* pitdet.cl */; };
+		C218A0592460657900B72E9D /* PeakDetectMachine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C218A0572460657900B72E9D /* PeakDetectMachine.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,10 @@
 		C218A051245BA33800B72E9D /* util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = util.hpp; sourceTree = "<group>"; };
 		C218A052245BA33900B72E9D /* err_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = err_code.h; sourceTree = "<group>"; };
 		C218A055245BA43900B72E9D /* cl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cl.hpp; sourceTree = "<group>"; };
+		C218A0562460657800B72E9D /* PeakDetectMachineCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeakDetectMachineCommon.h; sourceTree = "<group>"; };
+		C218A0572460657900B72E9D /* PeakDetectMachine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeakDetectMachine.cpp; sourceTree = "<group>"; };
+		C218A0582460657900B72E9D /* PeakDetectMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeakDetectMachine.h; sourceTree = "<group>"; };
+		C218A05A246067B900B72E9D /* StopWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopWatch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +72,10 @@
 		C218A043245B9EAD00B72E9D /* OpenClPitch */ = {
 			isa = PBXGroup;
 			children = (
+				C218A05A246067B900B72E9D /* StopWatch.h */,
+				C218A0572460657900B72E9D /* PeakDetectMachine.cpp */,
+				C218A0582460657900B72E9D /* PeakDetectMachine.h */,
+				C218A0562460657800B72E9D /* PeakDetectMachineCommon.h */,
 				C218A055245BA43900B72E9D /* cl.hpp */,
 				C218A04E245BA33800B72E9D /* pitdet.cl */,
 				C218A050245BA33800B72E9D /* device_picker.hpp */,
@@ -142,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C218A0592460657900B72E9D /* PeakDetectMachine.cpp in Sources */,
 				C218A053245BA33900B72E9D /* pitdet.cl in Sources */,
 				C218A045245B9EAD00B72E9D /* main.cpp in Sources */,
 			);
