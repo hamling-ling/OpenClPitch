@@ -126,17 +126,11 @@ int main(int argc, char *argv[])
         cl::NDRange local(WORK_GROUP_SIZE);
         // order bit reversealy
 
-        std::vector<osk_float_t>          h_out(N, 0);
-        std::vector<cl_int2> h_max(N/WORK_GROUP_SIZE);
-
+        std::vector<osk_float_t> h_out(N, 0);
         cl::Buffer d_x   = cl::Buffer(context, h_x.begin(), h_x.end(), true);
         cl::Buffer d_out = cl::Buffer(context,
                                       CL_MEM_READ_WRITE,
                                       sizeof(h_out[0]) * h_out.size()
-                                      );
-        cl::Buffer d_max = cl::Buffer(context,
-                                      CL_MEM_READ_WRITE,
-                                      sizeof(h_max[0]) * h_max.size()
                                       );
         cl::make_kernel<cl::Buffer, cl::Buffer>
             nsdf( program, "nsdf");
@@ -156,8 +150,6 @@ int main(int argc, char *argv[])
         for(auto v : h_out) {
             Input(mach, v);
         }
-        cl::copy(queue, d_max, h_max.begin(), h_max.end());
-
 
         PeakInfo_t keyMaximums[4] = { 0 };
         int keyMaxLen = 0;
@@ -169,16 +161,10 @@ int main(int argc, char *argv[])
                 const float    freq = 1.0 / peri;
                 const float    k    = log10f(pow(2.0f, 1.0f / 12.0f));
                 const uint16_t midi = (uint16_t)round(log10f(freq / 27.5f) / k) + 21;
-                cout << "freq=<< " << freq << " Hz, note=" << kNoteStrings[midi % 12] << endl;
+                cout << "freq= " << freq << " Hz, note=" << kNoteStrings[midi % 12] << endl;
             }
         }
         DestroyPeakDetectMachineContext(mach);
-
-        cl::copy(queue, d_max, h_max.begin(), h_max.end());
-        for( int i = 0; i < h_max.size(); i++) {
-            cout << "[" << i << "] = " << h_max[i].s0
-                               << ", " << h_max[i].s1 << endl;
-        }
     } catch (cl::Error err) {
         std::cout << "Exception\n";
         std::cerr << "ERROR: "
