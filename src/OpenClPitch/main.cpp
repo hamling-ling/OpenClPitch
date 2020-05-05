@@ -38,8 +38,10 @@
 #define CL_PATH         "pitdet.cl"
 #define DEVICE_ID       0
 #endif
-#define SAMPLE_SIZE_N   1024    // Sample Size
-#define WORK_GROUP_SIZE 128     // Workgroup size
+#define SAMPLE_SIZE_N   1024                    // Sample Size
+#define WORK_GROUP_SIZE 128                     // Workgroup size
+#define SAMPLING_FREQ   (44.1f*1000.0f)         // Sampling Rate in Hz(CD=44.1kHz)
+#define DELTA_T         (1.0f/SAMPLING_FREQ)    // Time nterval for x[n]-x[n+1] in sec
 
 //------------------------------------------------------------------------------
 //  functions
@@ -58,9 +60,8 @@ int main(int argc, char *argv[])
     // if f=440Hz, func is sin(2*pi*440*t)
     // for sampling freq 44.1 kHz, 1 samples is 1/(44.1*1000) sec
     for(int i = 0; i < N; i++) {
-        float sec_per_sample = 1.0f/(44.1f*1000.0f);
-        h_x[i] = sin(i * sec_per_sample * 440.0 * 2.0 * M_PI);
-        cout << "[" << i << "] = " << h_x[i] << endl;
+        h_x[i] = sin(i * DELTA_T * 440.0 * 2.0 * M_PI);
+        //cout << "[" << i << "] = " << h_x[i] << endl;
     }
 
     cout << "right acorr ----" << endl;
@@ -130,27 +131,31 @@ int main(int argc, char *argv[])
         queue.finish();
         cl::copy(queue, d_out, h_out.begin(), h_out.end());
 
-        cl::make_kernel<cl::Buffer, cl::Buffer>
-            peak_detection( program, "peak_detection");
-        /*{
-            StopWatch<std::chrono::milliseconds> sw;
-            for(int i = 0; i < 10000; i++) {
-                peak_detection(cl::EnqueueArgs( queue, global, local), d_x, d_max);
-                queue.finish();
-            }
-            cl::copy(queue, d_max, h_max.begin(), h_max.end());
-        }*/
+        cout << "nsdf ----" << endl;
+        for(int i = 0; i < h_out.size(); i++) {
+            cout << "[" << i << "] = " << h_out[i] << endl;
+        }
 
         MachineContext_t* mach = CreatePeakDetectMachineContext();
-        {
-            StopWatch<std::chrono::milliseconds> sw;
+        StopWatch<std::chrono::milliseconds> sw;
+        for(auto v : h_out) {
+            Input(mach, v);
+        }
+        cl::copy(queue, d_max, h_max.begin(), h_max.end());
 
-            for(int i = 0; i < 10000; i++) {
-                for(auto x : h_x) {
-                    Input(mach, x);
-                }
+
+        PeakInfo_t keyMaximums[4] = { 0 };
+        int keyMaxLen = 0;
+        GetKeyMaximums(mach, 0.8f, keyMaximums, sizeof(keyMaximums)/sizeof(keyMaximums[0]), &keyMaxLen);
+        if (0 < keyMaxLen) {
+            float delta = 0;
+            if(ParabolicInterp(mach, keyMaximums[0].index, &h_out[0], N, &delta)) {
+                const float    peri = DELTA_T * (keyMaximums[0].index + delta);
+                const float    freq = 1.0 / peri;
+                const float    k    = log10f(pow(2.0f, 1.0f / 12.0f));
+                const uint16_t midi = (uint16_t)round(log10f(freq / 27.5f) / k) + 21;
+                cout << "freq=<< " << freq << " Hz, note=" << kNoteStrings[midi % 12] << endl;
             }
-            cl::copy(queue, d_max, h_max.begin(), h_max.end());
         }
         DestroyPeakDetectMachineContext(mach);
 
