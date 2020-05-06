@@ -1,0 +1,397 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		67A6EDDB1ACE5BC300BBA775 /* RunnableService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67A6EDD91ACE5BC300BBA775 /* RunnableService.cpp */; };
+		67A6EDDC1ACE5BC300BBA775 /* RunnableService.h in Headers */ = {isa = PBXBuildFile; fileRef = 67A6EDDA1ACE5BC300BBA775 /* RunnableService.h */; };
+		67A6EDDF1ACE63A400BBA775 /* CaptureDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67A6EDDD1ACE63A400BBA775 /* CaptureDevice.cpp */; };
+		67A6EDE01ACE63A400BBA775 /* CaptureDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 67A6EDDE1ACE63A400BBA775 /* CaptureDevice.h */; };
+		C267C7251AD2E5B1003071E8 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C267C7241AD2E5B1003071E8 /* Accelerate.framework */; };
+		C27EABAC1ACD6D3400148297 /* SoundCapture.h in Headers */ = {isa = PBXBuildFile; fileRef = C27EABAB1ACD6D3400148297 /* SoundCapture.h */; };
+		C27EABB41ACD6D3400148297 /* libSoundCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C27EABA81ACD6D3400148297 /* libSoundCapture.a */; };
+		C27EABC31ACD6DB200148297 /* SoundCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C27EABC21ACD6DB200148297 /* SoundCapture.cpp */; };
+		C27EABC51ACD6DC900148297 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27EABC41ACD6DC900148297 /* OpenAL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C27EABB51ACD6D3400148297 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C27EABA01ACD6D3400148297 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C27EABA71ACD6D3400148297;
+			remoteInfo = SoundCapture;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		67A6EDD91ACE5BC300BBA775 /* RunnableService.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RunnableService.cpp; sourceTree = "<group>"; };
+		67A6EDDA1ACE5BC300BBA775 /* RunnableService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RunnableService.h; sourceTree = "<group>"; };
+		67A6EDDD1ACE63A400BBA775 /* CaptureDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CaptureDevice.cpp; sourceTree = "<group>"; };
+		67A6EDDE1ACE63A400BBA775 /* CaptureDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureDevice.h; sourceTree = "<group>"; };
+		C267C7241AD2E5B1003071E8 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		C27EABA81ACD6D3400148297 /* libSoundCapture.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSoundCapture.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C27EABAB1ACD6D3400148297 /* SoundCapture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundCapture.h; sourceTree = "<group>"; };
+		C27EABB31ACD6D3400148297 /* SoundCaptureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoundCaptureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C27EABB91ACD6D3400148297 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C27EABC21ACD6DB200148297 /* SoundCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundCapture.cpp; sourceTree = "<group>"; };
+		C27EABC41ACD6DC900148297 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C27EABA51ACD6D3400148297 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C267C7251AD2E5B1003071E8 /* Accelerate.framework in Frameworks */,
+				C27EABC51ACD6DC900148297 /* OpenAL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C27EABB01ACD6D3400148297 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C27EABB41ACD6D3400148297 /* libSoundCapture.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C27EAB9F1ACD6D3400148297 = {
+			isa = PBXGroup;
+			children = (
+				C267C7241AD2E5B1003071E8 /* Accelerate.framework */,
+				C27EABC41ACD6DC900148297 /* OpenAL.framework */,
+				C27EABAA1ACD6D3400148297 /* SoundCapture */,
+				C27EABB71ACD6D3400148297 /* SoundCaptureTests */,
+				C27EABA91ACD6D3400148297 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C27EABA91ACD6D3400148297 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C27EABA81ACD6D3400148297 /* libSoundCapture.a */,
+				C27EABB31ACD6D3400148297 /* SoundCaptureTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C27EABAA1ACD6D3400148297 /* SoundCapture */ = {
+			isa = PBXGroup;
+			children = (
+				C27EABC21ACD6DB200148297 /* SoundCapture.cpp */,
+				C27EABAB1ACD6D3400148297 /* SoundCapture.h */,
+				67A6EDD91ACE5BC300BBA775 /* RunnableService.cpp */,
+				67A6EDDA1ACE5BC300BBA775 /* RunnableService.h */,
+				67A6EDDD1ACE63A400BBA775 /* CaptureDevice.cpp */,
+				67A6EDDE1ACE63A400BBA775 /* CaptureDevice.h */,
+			);
+			path = SoundCapture;
+			sourceTree = "<group>";
+		};
+		C27EABB71ACD6D3400148297 /* SoundCaptureTests */ = {
+			isa = PBXGroup;
+			children = (
+				C27EABB81ACD6D3400148297 /* Supporting Files */,
+			);
+			path = SoundCaptureTests;
+			sourceTree = "<group>";
+		};
+		C27EABB81ACD6D3400148297 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C27EABB91ACD6D3400148297 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C27EABA61ACD6D3400148297 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C27EABAC1ACD6D3400148297 /* SoundCapture.h in Headers */,
+				67A6EDE01ACE63A400BBA775 /* CaptureDevice.h in Headers */,
+				67A6EDDC1ACE5BC300BBA775 /* RunnableService.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C27EABA71ACD6D3400148297 /* SoundCapture */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C27EABBC1ACD6D3400148297 /* Build configuration list for PBXNativeTarget "SoundCapture" */;
+			buildPhases = (
+				C27EABA41ACD6D3400148297 /* Sources */,
+				C27EABA51ACD6D3400148297 /* Frameworks */,
+				C27EABA61ACD6D3400148297 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SoundCapture;
+			productName = SoundCapture;
+			productReference = C27EABA81ACD6D3400148297 /* libSoundCapture.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		C27EABB21ACD6D3400148297 /* SoundCaptureTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C27EABBF1ACD6D3400148297 /* Build configuration list for PBXNativeTarget "SoundCaptureTests" */;
+			buildPhases = (
+				C27EABAF1ACD6D3400148297 /* Sources */,
+				C27EABB01ACD6D3400148297 /* Frameworks */,
+				C27EABB11ACD6D3400148297 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C27EABB61ACD6D3400148297 /* PBXTargetDependency */,
+			);
+			name = SoundCaptureTests;
+			productName = SoundCaptureTests;
+			productReference = C27EABB31ACD6D3400148297 /* SoundCaptureTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C27EABA01ACD6D3400148297 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Nobuhiro Kuroiwa";
+				TargetAttributes = {
+					C27EABA71ACD6D3400148297 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+					C27EABB21ACD6D3400148297 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = C27EABA31ACD6D3400148297 /* Build configuration list for PBXProject "SoundCapture" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C27EAB9F1ACD6D3400148297;
+			productRefGroup = C27EABA91ACD6D3400148297 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C27EABA71ACD6D3400148297 /* SoundCapture */,
+				C27EABB21ACD6D3400148297 /* SoundCaptureTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C27EABB11ACD6D3400148297 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C27EABA41ACD6D3400148297 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67A6EDDB1ACE5BC300BBA775 /* RunnableService.cpp in Sources */,
+				67A6EDDF1ACE63A400BBA775 /* CaptureDevice.cpp in Sources */,
+				C27EABC31ACD6DB200148297 /* SoundCapture.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C27EABAF1ACD6D3400148297 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C27EABB61ACD6D3400148297 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C27EABA71ACD6D3400148297 /* SoundCapture */;
+			targetProxy = C27EABB51ACD6D3400148297 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C27EABBA1ACD6D3400148297 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C27EABBB1ACD6D3400148297 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C27EABBD1ACD6D3400148297 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C27EABBE1ACD6D3400148297 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		C27EABC01ACD6D3400148297 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SoundCaptureTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C27EABC11ACD6D3400148297 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SoundCaptureTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C27EABA31ACD6D3400148297 /* Build configuration list for PBXProject "SoundCapture" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C27EABBA1ACD6D3400148297 /* Debug */,
+				C27EABBB1ACD6D3400148297 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C27EABBC1ACD6D3400148297 /* Build configuration list for PBXNativeTarget "SoundCapture" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C27EABBD1ACD6D3400148297 /* Debug */,
+				C27EABBE1ACD6D3400148297 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C27EABBF1ACD6D3400148297 /* Build configuration list for PBXNativeTarget "SoundCaptureTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C27EABC01ACD6D3400148297 /* Debug */,
+				C27EABC11ACD6D3400148297 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C27EABA01ACD6D3400148297 /* Project object */;
+}
