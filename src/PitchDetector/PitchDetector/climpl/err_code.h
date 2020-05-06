@@ -1,4 +1,3 @@
-
 #pragma once
 /*----------------------------------------------------------------------------
  *
@@ -139,6 +138,9 @@ const char *err_code (cl_int err_in)
     }
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 void check_error(cl_int err, const char *operation, char *filename, int line)
 {
@@ -151,6 +153,10 @@ void check_error(cl_int err, const char *operation, char *filename, int line)
     }
 }
 
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #define checkError(E, S) check_error(E,S,__FILE__,__LINE__)
 
+#endif
