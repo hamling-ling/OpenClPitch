@@ -63,7 +63,9 @@ bool PitchDetectorClImpl::Initialize()
         _range_global = cl::NDRange(_samplingSize);
         _range_local  = cl::NDRange(WORK_GROUP_SIZE);
 
-        _device_x   = cl::Buffer(_context, _host_x.begin(), _host_x.end(), true);
+        _device_x = cl::Buffer(_context, CL_MEM_READ_ONLY | CL_MEM_ALLOC_HOST_PTR,
+                                sizeof(osk_float_t) * _samplingSize);
+        //_device_x   = cl::Buffer(_context, _host_x.begin(), _host_x.end(), true);
         _device_out = cl::Buffer(_context,
                                  CL_MEM_READ_WRITE,
                                  sizeof(_host_out[0]) * _host_out.size()
@@ -83,10 +85,13 @@ bool PitchDetectorClImpl::Detect(const int16_t* x, PitchInfo& pitch)
 {
     bool is_success = true;
     try {
-        // will be changed to use zero copy
-        _device_x   = cl::Buffer(
-            _context, CL_MEM_USE_HOST_PTR, sizeof(int16_t) * _samplingSize,
-             (void*)x, NULL);
+        // this buf will be exposed to outside in the future so that use directry
+        // write to this buf.
+        int16_t* buf = (int16_t*)_queue.enqueueMapBuffer(
+            _device_x, true, CL_MAP_WRITE, 0, sizeof(osk_float_t) * _samplingSize
+        );
+        memcpy(buf, x, sizeof(int16_t) * _samplingSize);
+        _queue.enqueueUnmapMemObject(_device_x, buf);
 
         auto args = cl::EnqueueArgs( _queue, _range_global, _range_local);
         (*_kernel)(args, _device_x, _device_out);

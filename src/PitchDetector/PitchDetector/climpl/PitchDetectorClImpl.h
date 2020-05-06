@@ -33,8 +33,6 @@ protected:
     virtual bool Detect(const int16_t* x, PitchInfo& pitch);
 
 private:
-    // N samples as an input. Will be replaced when zerocopy implemented
-    std::vector<int16_t>     _host_x;
     std::vector<osk_float_t> _host_out;
     const uint16_t           _device_index;
     const float              _sampling_freq;
