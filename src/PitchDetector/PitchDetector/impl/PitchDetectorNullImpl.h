@@ -17,9 +17,9 @@ public:
     PitchDetectorNullImpl(int samplingRate, int samplingSize);
     virtual ~PitchDetectorNullImpl();
     virtual bool Initialize();
-    
+
 protected:
-    virtual bool Detect(const float* x, PitchInfo& pitch);
+    virtual bool Detect(const int16_t* x, PitchInfo& pitch);
 };
 
 #endif /* defined(__PitchDetector__PitchDetectorNullImpl__) */

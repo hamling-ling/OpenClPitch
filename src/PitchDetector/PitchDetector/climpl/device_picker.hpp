@@ -19,7 +19,6 @@
 
 #define MAX_INFO_STRING 256
 
-
 unsigned getDeviceList(std::vector<cl::Device>& devices)
 {
   cl_int err;
@@ -111,4 +110,3 @@ void parseArguments(int argc, char *argv[], cl_uint *deviceIndex)
     }
   }
 }
-

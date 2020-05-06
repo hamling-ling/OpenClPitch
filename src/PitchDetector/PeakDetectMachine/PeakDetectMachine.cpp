@@ -72,7 +72,7 @@ void DestroyPeakDetectMachineContext(MachineContext_t* ctx)
 	free(ctx);
 }
 
-void Input(MachineContext_t* ctx, float x)
+void Input(MachineContext_t* ctx, const float x)
 {
 	EventDetector_t detector = ctx->detectors[ctx->state];
 	PeakDetectMachineEvent_t evt = detector(ctx, x);
@@ -88,7 +88,7 @@ void ResetMachine(MachineContext_t* ctx)
 	ctx->detectors = s_eventDetectors;
 }
 
-void GetKeyMaximums(MachineContext_t* ctx, float filter, PeakInfo_t* list, int listmaxlen, int *num)
+void GetKeyMaximums(MachineContext_t* ctx, const float filter, PeakInfo_t* list, const int listmaxlen, int *num)
 {
 	if (ctx->keyMaxsNum == 0) {
 		*num = 0;
@@ -127,7 +127,7 @@ void GetKeyMaximums(MachineContext_t* ctx, float filter, PeakInfo_t* list, int l
 	*num = counter;
 }
 
- bool ParabolicInterp(MachineContext_t* ctx, int index, osk_float_t* xs, int N, float* x)
+ bool ParabolicInterp(MachineContext_t* ctx, const int index, const osk_float_t* xs, const int N, float* x)
 {
 	if (0 == index || N <= index + 1) {
 		return false;

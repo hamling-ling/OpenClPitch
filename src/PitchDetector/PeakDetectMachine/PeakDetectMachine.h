@@ -8,7 +8,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 	typedef struct _PaekInfo_t {
-		float value;
+		float    value;
 		uint16_t index;
 	} PeakInfo_t;
 
@@ -17,10 +17,10 @@ extern "C" {
 
 	MachineContext_t* CreatePeakDetectMachineContext();
 	void DestroyPeakDetectMachineContext(MachineContext_t* ctx);
-	void Input(MachineContext_t* ctx, float x);
+	void Input(MachineContext_t* ctx, const float x);
 	void ResetMachine(MachineContext_t* ctx);
-	void GetKeyMaximums(MachineContext_t* ctx, float filter, PeakInfo_t* list, int listmaxlen, int *num);
-	bool ParabolicInterp(MachineContext_t* ctx, int index, osk_float_t* xs, int N, float* x);
+	void GetKeyMaximums(MachineContext_t* ctx, const float filter, PeakInfo_t* list, const int listmaxlen, int *num);
+	bool ParabolicInterp(MachineContext_t* ctx, const int index, const osk_float_t* xs, const int N, float* x);
 
 #ifdef __cplusplus
 }

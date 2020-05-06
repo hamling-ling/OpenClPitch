@@ -11,7 +11,7 @@ public:
 	PitchDetector(int samplingRate, int samplingSize);
 	virtual ~PitchDetector();
 	bool Initialize();
-	bool Detect(const float* x, PitchInfo& pitch);
+	bool Detect(const int16_t* x, PitchInfo& pitch);
 
 private:
 	std::shared_ptr<PitchDetectorImpl> _impl;

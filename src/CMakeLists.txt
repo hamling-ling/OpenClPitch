@@ -12,10 +12,9 @@ add_library(sndcap STATIC
 add_library(
   pitdet STATIC
   PitchDetector/PitchDetector/PitchDetector.cpp
+  PitchDetector/PitchDetector/impl/PitchDetectorImpl.cpp
   PitchDetector/PitchDetector/impl/PitchDetectorNullImpl.cpp
   PitchDetector/PitchDetector/climpl/PitchDetectorClImpl.cpp
-  PitchDetector/PitchDetector/climpl/device_picker.hpp
-  PitchDetector/PitchDetector/climpl/util.hpp
   PitchDetector/PeakDetectMachine/PeakDetectMachine.cpp
   )
 

@@ -23,7 +23,7 @@ bool PitchDetectorNullImpl::Initialize()
     return false;
 }
 
-bool PitchDetectorNullImpl::Detect(const float* x, PitchInfo& pitch)
+bool PitchDetectorNullImpl::Detect(const int16_t* x, PitchInfo& pitch)
 {
     return false;
 }

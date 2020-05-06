@@ -28,7 +28,7 @@ bool PitchDetector::Initialize()
     return _impl->Initialize();
 }
 
-bool PitchDetector::Detect(const float* x, PitchInfo& pitch)
+bool PitchDetector::Detect(const int16_t* x, PitchInfo& pitch)
 {
     return _impl->Detect(x, pitch);
 }
