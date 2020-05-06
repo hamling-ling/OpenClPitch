@@ -22,10 +22,10 @@ typedef struct PitchInfo_ {
 
 static const float kNoteConst = log10(pow(2.0f, 1.0f / 12.0f));
 
-static const char* kNoteStrings[] {
-    "A", "B♭", "B", "C",
-    "C#", "D", "D#", "E",
-    "F", "F#", "G", "G#",
+static const char* kNoteStrings[] = {
+	"C",	"C#",	"D",	"D#",
+	"E",	 "F",	"F#",	"G",
+	"G#",	"A",	"Bb",	"B"
 };
 
 #endif

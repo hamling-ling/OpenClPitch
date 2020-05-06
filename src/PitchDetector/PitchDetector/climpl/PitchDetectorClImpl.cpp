@@ -17,7 +17,7 @@ using namespace std;
 PitchDetectorClImpl::PitchDetectorClImpl(int samplingRate, int samplingSize)
 :
 PitchDetectorImpl(samplingRate, samplingSize),
-_device_index(DEVICE_ID),
+_device_index(DEVICE_INDEX),
 _sampling_freq(samplingRate),
 _delta_t(1.0/_sampling_freq)
 {
@@ -34,26 +34,26 @@ bool PitchDetectorClImpl::Initialize()
 {
     _mach = CreatePeakDetectMachineContext();
 
-    std::vector<cl::Device> devices;
-    const unsigned numDevices = getDeviceList( devices);
-
-    // Check device index in range
-    if ( _device_index >= numDevices)
-    {
-        std::cout << "Invalid device index\n";
-        return false;
-    }
-
-    string name;
-    getDeviceName( _device, name);
-    std::cout << "\nUsing OpenCL device: " << name << "\n";
-    _device = devices[_device_index];
-
-    std::vector<cl::Device> chosen_device { _device };
-
     bool ret = true;
     try
     {
+        vector<cl::Device> devices;
+        const unsigned numDevices = getDeviceList( devices);
+
+        // Check device index in range
+        if ( _device_index >= numDevices)
+        {
+            std::cout << "Invalid device index\n";
+            return false;
+        }
+        cout << devices.size() << " device(s )found" << endl;
+
+        string name;
+        _device = devices[_device_index];
+        getDeviceName( _device, name);
+        std::cout << "\nUsing OpenCL device: " << name << "\n";
+
+        vector<cl::Device> chosen_device { _device };
         _context = cl::Context(chosen_device);
         _queue   = cl::CommandQueue( _context, _device);
 
@@ -62,7 +62,7 @@ bool PitchDetectorClImpl::Initialize()
         // Create the compute kernel from the program for bit-reverse ordering
         _range_global = cl::NDRange(_samplingSize);
         _range_local  = cl::NDRange(WORK_GROUP_SIZE);
-        // order bit reversealy
+
         _device_x   = cl::Buffer(_context, _host_x.begin(), _host_x.end(), true);
         _device_out = cl::Buffer(_context,
                                  CL_MEM_READ_WRITE,
@@ -73,13 +73,7 @@ bool PitchDetectorClImpl::Initialize()
         );
     }
     catch (cl::Error err) {
-        /*std::cout << "Exception\n";
-        std::cerr << "ERROR: "
-                  << err.what()
-                  << "("
-                  << err_code(err.err())
-                  << ")"
-                  << std::endl;*/
+        PrintException(err);
         ret = false;
     }
     return ret;
@@ -87,16 +81,27 @@ bool PitchDetectorClImpl::Initialize()
 
 bool PitchDetectorClImpl::Detect(const int16_t* x, PitchInfo& pitch)
 {
-    // will be changed to use zero copy
-    cl::copy(_host_x.begin(), _host_x.end(), _device_x);
+    bool is_success = true;
+    try {
+        // will be changed to use zero copy
+        _device_x   = cl::Buffer(
+            _context, CL_MEM_USE_HOST_PTR, sizeof(int16_t) * _samplingSize,
+             (void*)x, NULL);
 
-    auto args = cl::EnqueueArgs( _queue, _range_global, _range_local);
-    (*_kernel)(args, _device_x, _device_out);
-    _queue.finish();
+        auto args = cl::EnqueueArgs( _queue, _range_global, _range_local);
+        (*_kernel)(args, _device_x, _device_out);
+        _queue.finish();
 
-    cl::copy(_queue, _device_out, _host_out.begin(), _host_out.end());
+        cl::copy(_queue, _device_out, _host_out.begin(), _host_out.end());
+    } catch (cl::Error err) {
+        PrintException(err);
+        is_success = false;
+    }
 
-    return PeakDetection(_host_out, pitch);
+    if(is_success) {
+        is_success = PeakDetection(_host_out, pitch);
+    }
+    return is_success;
 }
 
 bool PitchDetectorClImpl::PeakDetection(const std::vector<osk_float_t>& nsdf, PitchInfo& pitch)
@@ -117,7 +122,6 @@ bool PitchDetectorClImpl::PeakDetection(const std::vector<osk_float_t>& nsdf, Pi
             const float    peri = _delta_t * (keyMaximums[0].index + delta);
             const float    freq = 1.0 / peri;
             const uint16_t midi = (uint16_t)round(log10f(freq / 27.5f) / kNoteConst) + 21;
-            cout << "freq= " << freq << " Hz, note=" << kNoteStrings[midi % 12] << endl;
 
             pitch.freq    = freq;
             pitch.midi    = midi;
@@ -128,4 +132,15 @@ bool PitchDetectorClImpl::PeakDetection(const std::vector<osk_float_t>& nsdf, Pi
 
     pitch.error = ret;
     return ret;
+}
+
+void PitchDetectorClImpl::PrintException(cl::Error& err)
+{
+    std::cout << "Exception\n";
+    std::cerr << "ERROR: "
+                << err.what()
+                << "("
+                << err_code(err.err())
+                << ")"
+                << std::endl;
 }

@@ -17,7 +17,7 @@
 #include "../../PeakDetectMachine/PeakDetectMachine.h"
 
 #define CL_PATH         "pitdet.cl"
-#define DEVICE_ID       0
+#define DEVICE_INDEX    0
 #define WORK_GROUP_SIZE 128
 
 typedef struct _MachineContext_t MachineContext_t;
@@ -51,6 +51,7 @@ private:
     MachineContext_t*        _mach;
 
     bool PeakDetection(const std::vector<osk_float_t>& nsdf, PitchInfo& pitch);
+    void PrintException(cl::Error& err);
 };
 
 #endif /* defined(__PitchDetector__PitchDetectorClImpl__) */
