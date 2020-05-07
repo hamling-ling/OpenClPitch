@@ -1,9 +1,14 @@
 #include <iostream>
 #include <vector>
+#include <thread>
+#include "../SoundCapture/SoundCapture/SoundCapture.h"
 #include "../PitchDetector/PitchDetector/PitchDetector.h"
 
 using namespace std;
 
+const int   SAMPLING_RATE = 44.1*1000;
+const int   N             = 1024;
+const float DELTA_T       = 1.0f/SAMPLING_RATE;
 
 int16_t Conv2Int16(float val)
 {
@@ -49,13 +54,37 @@ void CraeteSineWave(float delta_t, std::vector<int16_t>& x)
     }
 }
 
+typedef struct _CaptureContext {
+    uint32_t       count;
+    PitchDetector* detector;
+} CaptureContext_t;
 
-int main(int argc, char *argv[])
+int16_t* LeaseBuffer(SoundCapture* cap, void* context)
 {
-    const int   SAMPLING_RATE = 44.1*1000;
-    const int   N             = 1024;
-    const float DELTA_T       = 1.0f/SAMPLING_RATE;
+    CaptureContext_t* capCtx = static_cast<CaptureContext_t*>(context);
+    return nullptr;
+}
 
+void FinishLease(SoundCapture* cap, void* context)
+{
+    CaptureContext_t* capCtx = static_cast<CaptureContext_t*>(context);
+}
+
+void OnCaptured(SoundCapture* cap, SoundCaptureNotification note, void* context)
+{
+    CaptureContext_t* capCtx = static_cast<CaptureContext_t*>(context);
+
+    PitchInfo pitch = {};
+    if(!capCtx->detector->Detect(NULL, pitch)) {
+        //cout << "Pitch Detection failed" << endl;
+        return;
+    }
+
+    cout << "freq= " << pitch.freq << "Hz, midi=" << pitch.midi << ", note=" << pitch.noteStr << endl;
+}
+
+int DebugDetector()
+{
     std::vector<int16_t> x( N);
     CraeteSineWave(DELTA_T, x);
 
@@ -71,8 +100,64 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    cout << "freq=" << pitch.freq << ", " << pitch.noteStr << endl;
     cout << "freq= " << pitch.freq << "Hz, midi=" << pitch.midi << ", note=" << pitch.noteStr << endl;
+
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    PitchDetector detector(SAMPLING_RATE, N);
+    if(!detector.Initialize()) {
+        cout << "PitchDetector initialize failure" << endl;
+        return 1;
+    }
+
+    SoundCapture cap(SAMPLING_RATE, N);
+
+    CaptureContext_t ctx = {};
+    ctx.count    = 0;
+    ctx.detector = &detector;
+
+    SoundCaptureError   capResult;
+    capResult = cap.Initialize(LeaseBuffer, FinishLease, OnCaptured, &ctx);
+    if(SoundCaptureSuccess != capResult) {
+        cout << "SoundCapture initialize failed " << capResult << endl;
+        return 1;
+    }
+
+    vector<std::string> devices;
+    capResult = cap.GetDevices(devices);
+    if(SoundCaptureSuccess != capResult) {
+        cout << "Get OpenAL device failed " << capResult << endl;
+        return 1;
+    }
+    if(devices.size() == 0) {
+        cout << "OpenAL device not found" << endl;
+        return 1;
+    }
+
+    for(int i = 0; i < devices.size(); i++) {
+        cout << "[" << i << "] " << devices[i] << endl;
+    }
+    cout << "using device [0] " << devices[0] << endl;
+
+    cap.SelectDevice(0);
+    cap.Start();
+
+    cout << "enter to exit" << endl;
+
+    string in;
+    cin >> in;
+    cout << "exit" << endl;
+
+    cap.Stop();
+    this_thread::sleep_for(std::chrono::milliseconds(200));
+    capResult = cap.DeselectDevice();
+    if(SoundCaptureSuccess != capResult) {
+        cout << "OpenAL Device deselect failed " << capResult << endl;
+        return 1;
+    }
 
     return 0;
 }
