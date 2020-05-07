@@ -123,6 +123,16 @@ int CaptureDevice::SampleNumber()
 	return _sampleNum;
 }
 
+int CaptureDevice::GetCapturedNum()
+{
+	// Check how much audio data has been captured (note that
+	// 'capturedFrameNum' is the number of frames, not bytes)
+	ALint capturedFrameNum;
+	alcGetIntegerv(_dev, ALC_CAPTURE_SAMPLES, 1, &capturedFrameNum);
+
+	return capturedFrameNum;
+}
+
 CaptureDeviceError CaptureDevice::Sample(ALshort* data)
 {
 	if(!_dev) {
@@ -130,13 +140,9 @@ CaptureDeviceError CaptureDevice::Sample(ALshort* data)
 	}
 	
 	alcMakeContextCurrent(_ctx);
-	
-	/* Check how much audio data has been captured (note that 'val' is the
-		* number of frames, not bytes) */
-	ALint capturedFrameNum;
-	alcGetIntegerv(_dev, ALC_CAPTURE_SAMPLES, 1, &capturedFrameNum);
-	
-	if (capturedFrameNum <= _sampleNum) {
+
+	int capturedSize = GetCapturedNum();
+	if(capturedSize < _sampleNum) {
 		return CaptureDeviceErrorTooEarly;
 	}
 	

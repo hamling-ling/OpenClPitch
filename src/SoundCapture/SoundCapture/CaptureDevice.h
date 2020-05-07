@@ -45,8 +45,9 @@ public:
 	
 	int SamplingRate();
 	int SampleNumber();
+	int GetCapturedNum();
 	CaptureDeviceError Sample(ALshort* data);
-	
+
 private:
 	const int _sampleRate;
 	const int _sampleNum;
