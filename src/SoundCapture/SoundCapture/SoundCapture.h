@@ -11,6 +11,7 @@
 
 typedef enum _SoundCaptureError {
 	SoundCaptureSuccess,
+	SoundCaptureErrorArgs,
 	SoundCaptureErrorAlreadyRunning,
 	SoundCaptureErrorNotInitialized,
 	SoundCaptureErrorNoDevice,
@@ -40,10 +41,10 @@ public:
 	SoundCapture(int sampleRate, int sampleNum);
 	virtual ~SoundCapture();
 
-	bool Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
-					SoundCaptureBufferFinishFunc_t finishLease,
-					SoundCaptureEventHandler_t     eventHandler,
-	 				void* user);
+	SoundCaptureError Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
+								 SoundCaptureBufferFinishFunc_t finishLease,
+								 SoundCaptureEventHandler_t     eventHandler,
+								 void* 							user);
 	SoundCaptureError Start();
 	SoundCaptureError Stop();
 	SoundCaptureError GetDevices(std::vector<std::string>& vec);

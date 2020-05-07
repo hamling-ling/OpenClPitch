@@ -45,13 +45,14 @@ SoundCapture::~SoundCapture()
 	}
 }
 
-bool SoundCapture::Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
-                              SoundCaptureBufferFinishFunc_t finishLeaseFunc,
-							  SoundCaptureEventHandler_t     eventHandler,
-                              void* user)
+SoundCaptureError SoundCapture::Initialize(
+	SoundCaptureBufferRelaseFunc_t 	leaseFunc,
+	SoundCaptureBufferFinishFunc_t 	finishLeaseFunc,
+	SoundCaptureEventHandler_t     	eventHandler,
+	void* 							user)
 {
-	if(!_leaseFunc || !_finishLeaseFunc) {
-		return false;
+	if(!leaseFunc || !finishLeaseFunc) {
+		return SoundCaptureErrorArgs;
 	}
 
 	_eventHandler    = eventHandler;
@@ -59,7 +60,7 @@ bool SoundCapture::Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
 	_finishLeaseFunc = finishLeaseFunc;
 	_user = user;
 
-	return true;
+	return SoundCaptureSuccess;
 }
 
 SoundCaptureError SoundCapture::Start()
@@ -121,6 +122,8 @@ SoundCaptureError SoundCapture::DeselectDevice()
 
 	CaptureDeviceError err = _device->DestroyDevice();
 	if(CaptureDeviceErrorDeviceExist == err) {
+		return SoundCaptureErrorInternal;
+	} else if(CaptureDeviceErrorNoError != err) {
 		return SoundCaptureErrorInternal;
 	}
 
