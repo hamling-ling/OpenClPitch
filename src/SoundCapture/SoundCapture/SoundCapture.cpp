@@ -2,11 +2,7 @@
 
 #include <algorithm>
 #include <cstring>
-
-//#define USE_VDSP
-#ifdef USE_VDSP
-#include <Accelerate/Accelerate.h>
-#endif
+#include <time.h>
 
 //#define OUTPUT_TO_FILE
 
@@ -19,8 +15,25 @@
 
 using namespace std;
 
+static int NanoSleep(long nano)
+{
+	struct timespec tim, tim2;
+	tim.tv_sec  = 0;
+	tim.tv_nsec = nano;
+	int result = nanosleep(&tim , &tim2);
+	if(result < 0)
+	{
+		printf("Nano sleep system call failed \n");
+		return -1;
+	}
+   return result;
+}
+
 SoundCapture::SoundCapture(int sampleRate, int sampleNum)
-: _unity(32768.0f), _sampleBuf(NULL), _sampleBufNrm(NULL), _device(make_shared<CaptureDevice>(sampleRate, sampleNum))
+: _device(make_shared<CaptureDevice>(sampleRate, sampleNum)),
+  _eventHandler(nullptr),
+  _leaseFunc(nullptr),
+  _finishLeaseFunc(nullptr)
 {
 }
 
@@ -30,57 +43,46 @@ SoundCapture::~SoundCapture()
 	if(_device) {
 		_device->DestroyDevice();
 	}
-	delete[] (_sampleBuf);
-    delete[] (_sampleBufNrm);
 }
 
-bool SoundCapture::Initialize(SoundCaptureCallback_t callback, void* user)
+bool SoundCapture::Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
+                              SoundCaptureBufferFinishFunc_t finishLeaseFunc,
+							  SoundCaptureEventHandler_t     eventHandler,
+                              void* user)
 {
-	if(_sampleBuf) {
-		return true;
-	}
-	
-	_callback = callback;
-	_sampleBuf = new int16_t[_device->SampleNumber()];
-	_user = user;
-
-	if(!_sampleBuf) {
+	if(!_leaseFunc || !_finishLeaseFunc) {
 		return false;
 	}
-	
-    _sampleBufNrm = new float[_device->SampleNumber()];
-    if(!_sampleBufNrm) {
-        return false;
-    }
-    
+
+	_eventHandler    = eventHandler;
+	_leaseFunc       = leaseFunc;
+	_finishLeaseFunc = finishLeaseFunc;
+	_user = user;
+
 	return true;
 }
 
 SoundCaptureError SoundCapture::Start()
 {
-	if(!_sampleBuf) {
-		return SoundCaptureErrorNotInitialized;
-	}
-	
 	if(_device->SelectedDevice() == -1) {
 		return SoundCaptureErrorNoDevice;
 	}
-	
+
 	ServiceStart();
 
-	return SoundCaptureErrorNoError;
+	return SoundCaptureSuccess;
 }
 
 SoundCaptureError SoundCapture::Stop()
 {
 	ServiceStop();
-	return SoundCaptureErrorNoError;
+	return SoundCaptureSuccess;
 }
 
 SoundCaptureError SoundCapture::GetDevices(std::vector<std::string>& vec)
 {
 	_device->GetDevices(vec);
-	return SoundCaptureErrorNoError;
+	return SoundCaptureSuccess;
 }
 
 int SoundCapture::Level()
@@ -94,17 +96,17 @@ SoundCaptureError SoundCapture::SelectDevice(int index)
 	if(IsRunning()) {
 		return SoundCaptureErrorAlreadyRunning;
 	}
-	
+
 	if(_device->SelectedDevice() != -1) {
 		return SoundCaptureErrorDeviceExist;
 	}
-	
+
 	CaptureDeviceError err = _device->CreateDevice(index);
 	if(CaptureDeviceErrorDeviceExist == err) {
 		return SoundCaptureErrorNoDevice;
 	}
-	
-	return SoundCaptureErrorNoError;
+
+	return SoundCaptureSuccess;
 }
 
 SoundCaptureError SoundCapture::DeselectDevice()
@@ -112,17 +114,17 @@ SoundCaptureError SoundCapture::DeselectDevice()
 	if(IsRunning()) {
 		return SoundCaptureErrorAlreadyRunning;
 	}
-	
+
 	if(_device->SelectedDevice() == -1) {
-		return SoundCaptureErrorNoError;
+		return SoundCaptureSuccess;
 	}
-	
+
 	CaptureDeviceError err = _device->DestroyDevice();
 	if(CaptureDeviceErrorDeviceExist == err) {
 		return SoundCaptureErrorInternal;
 	}
-	
-	return SoundCaptureErrorNoError;
+
+	return SoundCaptureSuccess;
 }
 
 int SoundCapture::SelectedDevice()
@@ -130,114 +132,69 @@ int SoundCapture::SelectedDevice()
     return _device->SelectedDevice();
 }
 
-SoundCaptureError SoundCapture::GetBuffer(float* out)
-{
-	if (out) {
-		std::lock_guard<std::recursive_mutex> lock(_dataMutex);
-		int N = _device->SampleNumber();
-		for (int i = 0; i < N; i++) {
-			out[i] = _sampleBufNrm[i];
-		}
-	}
-	return SoundCaptureErrorNoError;
-}
-
-float* SoundCapture::GetRawBufferPointer()
-{
-    return _sampleBufNrm;
-}
-
 void SoundCapture::ServiceProc()
 {
 	const int N = _device->SampleNumber();
-	ALshort* data = static_cast<int16_t*>(_sampleBuf);
 
-	if(!_sampleBuf) {
-		NotifyCaptureError(SoundCaptureErrorNotInitialized);
-		ProcFinished();
-		return;
-	}
-	
 	if(_device->SelectedDevice() == -1) {
-		NotifyCaptureError(SoundCaptureErrorNoDevice);
+		MakeCaptureNotification(SoundCaptureErrorNoDevice);
 		ProcFinished();
 		return;
 	}
-	
+
 	_device->CaptureStart();
 
-	CaptureDeviceError err = CaptureDeviceErrorNoError;
 	while (!IsStopRequested())
 	{
+		SoundCaptureError result = SoundCaptureSuccess;
 		{
 			std::lock_guard<std::recursive_mutex> lock(_dataMutex);
-			
-			// Read the captured audio
-			memset(data, 0, sizeof(ALshort) * N);
-			CaptureDeviceError err = _device->Sample(data);
-			if(CaptureDeviceErrorTooEarly == err) {
+
+			int capturedNum = _device->GetCapturedNum();
+			if(capturedNum < N) {
+				SleepForSamples(N - capturedNum);
 				continue;
 			}
-			
-			if(CaptureDeviceErrorNoError == err) {
-				//  Process/filter captured data
-				ProcessData(static_cast<int16_t*>(data), N);
+
+			int16_t* data = _leaseFunc(this, _user);
+			if(data) {
+				CaptureDeviceError deviceError = _device->Sample(data);
+				if(CaptureDeviceErrorTooEarly == deviceError) {
+					continue;
+				} else if(CaptureDeviceErrorNoError != deviceError) {
+					result = SoundCaptureErrorInternal;
+				}
+			} else {
+				result = SoundCaptureErrorInternal;
 			}
 		}
 
-		if(!_callback) {
+		if(!_eventHandler) {
 			continue;
 		}
-		
-		SoundCaptureNotification note;
-		if(CaptureDeviceErrorNoError == err) {
-			note.type = SoundCaptureNotificationTypeCaptured;
-			note.user = _user;
-			note.err = SoundCaptureErrorNoError;
-			_callback(this, note);
-		} else {
-			NotifyCaptureError(SoundCaptureErrorInternal);
-			break;
-		}
+
+		MakeCaptureNotification(result);
 	}
 
 	_device->CaptureStop();
     ProcFinished();
 }
 
-void SoundCapture::ProcessData(int16_t *data, int dataNum)
+void SoundCapture::MakeCaptureNotification(SoundCaptureError err)
 {
-#ifdef OUTPUT_TO_FILE
-	std::ofstream outfile("new.txt", std::ofstream::trunc);
-	for (int i = 0; i<dataNum; i++) {
-		outfile << int(data[i]) << endl;
+	SoundCaptureNotification note = {};
+	note.type = SoundCaptureNotificationTypeCapture;
+	note.err  = err;
+	if(_eventHandler) {
+		_eventHandler(this, note, _user);
 	}
-#endif
-    
-    float maxNrmValue = 0;
-#ifdef USE_VDSP
-    // int16_t -> float
-    vDSP_vflt16(data, 1, _sampleBufNrm, 1, dataNum);
-    // float -> normalized float
-    vDSP_vsdiv(_sampleBufNrm, 1, &_unity, _sampleBufNrm, 1, dataNum);
-    // maximum
-    vDSP_maxv(_sampleBufNrm, 1, &maxNrmValue, dataNum);
-#else
-    for (int i = 0; i<dataNum; i++) {
-        _sampleBufNrm[i] = data[i] / _unity;
-        maxNrmValue = max(_sampleBufNrm[i], maxNrmValue);
-    }
-#endif
-    
-	_level = static_cast<int>(maxNrmValue*100.0f);
 }
 
-void SoundCapture::NotifyCaptureError(SoundCaptureError err)
+void SoundCapture::SleepForSamples(const int leftSampleNum)
 {
-	SoundCaptureNotification note;
-	note.type = SoundCaptureNotificationTypeCaptureError;
-	note.err = err;
-	if(_callback) {
-		_callback(this, note);
+	if(0 < leftSampleNum) {
+		float sampleSec     = 1.0f / _device->SamplingRate();
+		long  sampleNanoSec = sampleSec * 1000 * 1000 * 1000;
+		NanoSleep(leftSampleNum * sampleSec);
 	}
 }

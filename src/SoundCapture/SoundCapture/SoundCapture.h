@@ -10,7 +10,7 @@
 #include "RunnableService.h"
 
 typedef enum _SoundCaptureError {
-	SoundCaptureErrorNoError,
+	SoundCaptureSuccess,
 	SoundCaptureErrorAlreadyRunning,
 	SoundCaptureErrorNotInitialized,
 	SoundCaptureErrorNoDevice,
@@ -19,18 +19,18 @@ typedef enum _SoundCaptureError {
 } SoundCaptureError;
 
 typedef enum _SoundCaptureNotificationType {
-	SoundCaptureNotificationTypeCaptured,
-	SoundCaptureNotificationTypeCaptureError,
+	SoundCaptureNotificationTypeCapture
 } SoundCaptureNotificationType;
 
 struct SoundCaptureNotification {
 	SoundCaptureNotificationType type;
-	SoundCaptureError err;
-	void* user;
+	SoundCaptureError            err;
 };
 
 class SoundCapture;
-typedef std::function < void(SoundCapture*, SoundCaptureNotification)> SoundCaptureCallback_t;
+typedef std::function <void(SoundCapture*, SoundCaptureNotification, void*)> SoundCaptureEventHandler_t;
+typedef std::function <int16_t*(SoundCapture*, void*)> SoundCaptureBufferRelaseFunc_t;
+typedef std::function <void(SoundCapture*, void*)>     SoundCaptureBufferFinishFunc_t;
 
 class CaptureDevice;
 
@@ -40,7 +40,10 @@ public:
 	SoundCapture(int sampleRate, int sampleNum);
 	virtual ~SoundCapture();
 
-	bool Initialize(SoundCaptureCallback_t callback, void* user);
+	bool Initialize(SoundCaptureBufferRelaseFunc_t leaseFunc,
+					SoundCaptureBufferFinishFunc_t finishLease,
+					SoundCaptureEventHandler_t     eventHandler,
+	 				void* user);
 	SoundCaptureError Start();
 	SoundCaptureError Stop();
 	SoundCaptureError GetDevices(std::vector<std::string>& vec);
@@ -52,28 +55,20 @@ public:
 	 *	Get recording signal level.
 	 */
 	int Level();
-
-	/**
-	 *	safely obtain captured data. data is normalized.
-	 */
-	SoundCaptureError GetBuffer(float* out);
-    
-    float* GetRawBufferPointer();
     
 protected:
 		void ServiceProc();
 	
 private:
-    const float _unity;
-	int16_t* _sampleBuf;
-    float* _sampleBufNrm;
-	std::recursive_mutex _dataMutex;
-	int _level;
-	void* _user;
-	SoundCaptureCallback_t _callback;
+	std::recursive_mutex           _dataMutex;
+	int                            _level;
+	void*                          _user;
+	SoundCaptureEventHandler_t     _eventHandler;
+	SoundCaptureBufferRelaseFunc_t _leaseFunc;
+	SoundCaptureBufferFinishFunc_t _finishLeaseFunc;
 	std::shared_ptr<CaptureDevice> _device;  // never be NULL
 	
-	void ProcessData(int16_t* data, int dataNum);
-	void NotifyCaptureError(SoundCaptureError err);
+	void MakeCaptureNotification(SoundCaptureError err);
+	void SleepForSamples(const int leftSampleNum);
 };
 
