@@ -162,6 +162,8 @@ void SoundCapture::ServiceProc()
 			int16_t* data = _leaseFunc(this, _user);
 			if(data) {
 				CaptureDeviceError deviceError = _device->Sample(data);
+				_finishLeaseFunc(this, data, _user);
+
 				if(CaptureDeviceErrorTooEarly == deviceError) {
 					continue;
 				} else if(CaptureDeviceErrorNoError != deviceError) {

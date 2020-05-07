@@ -31,7 +31,7 @@ struct SoundCaptureNotification {
 class SoundCapture;
 typedef std::function <void(SoundCapture*, SoundCaptureNotification, void*)> SoundCaptureEventHandler_t;
 typedef std::function <int16_t*(SoundCapture*, void*)> SoundCaptureBufferRelaseFunc_t;
-typedef std::function <void(SoundCapture*, void*)>     SoundCaptureBufferFinishFunc_t;
+typedef std::function <void(SoundCapture*, int16_t*, void*)>     SoundCaptureBufferFinishFunc_t;
 
 class CaptureDevice;
 
