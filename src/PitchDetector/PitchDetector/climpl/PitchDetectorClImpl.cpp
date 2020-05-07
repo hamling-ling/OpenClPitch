@@ -21,7 +21,6 @@ _device_index(DEVICE_INDEX),
 _sampling_freq(samplingRate),
 _delta_t(1.0/_sampling_freq)
 {
-    _host_x   = vector<int16_t>(    samplingSize, 0);
     _host_out = vector<osk_float_t>(samplingSize, 0);
 }
 
