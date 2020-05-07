@@ -29,4 +29,4 @@ target_compile_options(pitdet
   PUBLIC -mfp16-format=ieee
   )
 
-target_link_libraries(mikutuner pitdet OpenCL::OpenCL sndcap openal)
+target_link_libraries(mikutuner pitdet OpenCL::OpenCL sndcap openal pthread)
