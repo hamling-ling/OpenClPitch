@@ -28,9 +28,9 @@ public:
     PitchDetectorClImpl(int samplingRate, int samplingSize);
     virtual ~PitchDetectorClImpl();
     virtual bool Initialize();
-
-protected:
     virtual bool Detect(const int16_t* x, PitchInfo& pitch);
+    virtual int16_t* LeaseBuffer();
+    virtual void LeaseFinish(int16_t* buf);
 
 private:
     std::vector<osk_float_t> _host_out;

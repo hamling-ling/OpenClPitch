@@ -27,3 +27,12 @@ bool PitchDetectorNullImpl::Detect(const int16_t* x, PitchInfo& pitch)
 {
     return false;
 }
+
+int16_t* PitchDetectorNullImpl::LeaseBuffer()
+{
+    return nullptr;
+}
+
+void PitchDetectorNullImpl::LeaseFinish(int16_t* buf)
+{
+}

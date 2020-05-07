@@ -32,3 +32,13 @@ bool PitchDetector::Detect(const int16_t* x, PitchInfo& pitch)
 {
     return _impl->Detect(x, pitch);
 }
+
+int16_t* PitchDetector::LeaseBuffer()
+{
+    return _impl->LeaseBuffer();
+}
+
+void PitchDetector::LeaseFinish(int16_t* buf)
+{
+    return _impl->LeaseFinish(buf);
+}

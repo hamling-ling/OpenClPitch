@@ -12,6 +12,8 @@
 #include "device_picker.hpp"
 #include "../../PeakDetectMachine/PeakDetectMachine.h"
 
+#define UNUSED(expr) do { (void)(expr); } while (0)
+
 using namespace std;
 
 PitchDetectorClImpl::PitchDetectorClImpl(int samplingRate, int samplingSize)
@@ -82,16 +84,13 @@ bool PitchDetectorClImpl::Initialize()
 
 bool PitchDetectorClImpl::Detect(const int16_t* x, PitchInfo& pitch)
 {
+    // user of this module is expected to call LeaseBuffer() and directly write
+    // the returned memory before calling this method. So data must be already witten
+    // (unmapped) to _device_x and we don't need to use parameter x of this method.
+    UNUSED(x);
+
     bool is_success = true;
     try {
-        // this buf will be exposed to outside in the future so that use directry
-        // write to this buf.
-        int16_t* buf = (int16_t*)_queue.enqueueMapBuffer(
-            _device_x, true, CL_MAP_WRITE, 0, sizeof(osk_float_t) * _samplingSize
-        );
-        memcpy(buf, x, sizeof(int16_t) * _samplingSize);
-        _queue.enqueueUnmapMemObject(_device_x, buf);
-
         auto args = cl::EnqueueArgs( _queue, _range_global, _range_local);
         (*_kernel)(args, _device_x, _device_out);
         _queue.finish();
@@ -106,6 +105,19 @@ bool PitchDetectorClImpl::Detect(const int16_t* x, PitchInfo& pitch)
         is_success = PeakDetection(_host_out, pitch);
     }
     return is_success;
+}
+
+int16_t* PitchDetectorClImpl::LeaseBuffer()
+{
+    void* buf = (int16_t*)_queue.enqueueMapBuffer(
+        _device_x, true, CL_MAP_WRITE, 0, sizeof(osk_float_t) * _samplingSize
+    );
+    return static_cast<int16_t*>(buf);
+}
+
+void PitchDetectorClImpl::LeaseFinish(int16_t* buf)
+{
+    _queue.enqueueUnmapMemObject(_device_x, static_cast<void*>(buf));
 }
 
 bool PitchDetectorClImpl::PeakDetection(const std::vector<osk_float_t>& nsdf, PitchInfo& pitch)

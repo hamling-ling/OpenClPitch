@@ -12,6 +12,8 @@ public:
 	virtual ~PitchDetector();
 	bool Initialize();
 	bool Detect(const int16_t* x, PitchInfo& pitch);
+	int16_t* LeaseBuffer();
+	void LeaseFinish(int16_t* buf);
 
 private:
 	std::shared_ptr<PitchDetectorImpl> _impl;

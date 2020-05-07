@@ -11,6 +11,9 @@ public:
 	virtual ~PitchDetectorImpl() = 0;
 	virtual bool Initialize() = 0;
 	virtual bool Detect(const int16_t* x, PitchInfo& pitch) = 0;
+	virtual int16_t* LeaseBuffer() = 0;
+	virtual void LeaseFinish(int16_t* buf) = 0;
+
 protected:
 	const int _samplingRate;
 	const int _samplingSize;
