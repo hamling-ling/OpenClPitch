@@ -27,7 +27,7 @@ int CaptureDevice::SelectedDevice()
 	if(_dev) {
 		return CaptureDeviceErrorDeviceExist;
 	}
-	
+
 	return _selectedDeviceIndex;
 }
 
@@ -43,7 +43,7 @@ CaptureDeviceError CaptureDevice::GetDevices(std::vector<std::string>& vec)
             pDeviceList += strlen(pDeviceList) + 1;
         }
     }
-    
+
 	return CaptureDeviceErrorNoError;
 }
 
@@ -52,38 +52,39 @@ CaptureDeviceError CaptureDevice::CreateDevice(int index)
 	if(_dev) {
 		return CaptureDeviceErrorDeviceExist;
 	}
-	
+
 	/* If you don't need 3D spatialization, this should help processing time */
 	alDistanceModel(AL_NONE);
 	_dev = alcCaptureOpenDevice(NULL, _sampleRate, AL_FORMAT_MONO16, sizeof(ALshort)*_sampleNum);
-	
+
 	if(_dev) {
 		_ctx = alcCreateContext(_dev, NULL);
 		alcMakeContextCurrent(_ctx);
 		_selectedDeviceIndex = index;
 	}
-	
+
 	return CaptureDeviceErrorNoError;
 }
 
 CaptureDeviceError CaptureDevice::DestroyDevice()
 {
-	if(_dev) {
+	if(!_dev) {
+		cout << "device not initialized" << endl;
 		return CaptureDeviceErrorNoError;
 	}
-	
+
 	CaptureStop();
-	
+
 	/* Shutdown and cleanup */
 	alcCaptureCloseDevice(_dev);
-	
+
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(_ctx);
-	
+
 	_dev = NULL;
 	_ctx = NULL;
 	_selectedDeviceIndex = -1;
-	
+
 	return CaptureDeviceErrorNoError;
 }
 
@@ -92,12 +93,12 @@ CaptureDeviceError CaptureDevice::CaptureStart()
 	if(!_dev) {
 		return CaptureDeviceErrorNoDevice;
 	}
-	
+
 	alcMakeContextCurrent(_ctx);
-	
+
 	/* Start capture, and enter the audio loop */
 	alcCaptureStart(_dev);    //starts ring buffer
-	
+
 	return CaptureDeviceErrorNoError;
 }
 
@@ -106,10 +107,10 @@ CaptureDeviceError CaptureDevice::CaptureStop()
 	if(!_dev) {
 		return CaptureDeviceErrorNoError;
 	}
-	
+
 	alcMakeContextCurrent(_ctx);
 	alcCaptureStop(_dev);
-	
+
 	return CaptureDeviceErrorNoError;
 }
 
@@ -138,15 +139,15 @@ CaptureDeviceError CaptureDevice::Sample(ALshort* data)
 	if(!_dev) {
 		return CaptureDeviceErrorNoDevice;
 	}
-	
+
 	alcMakeContextCurrent(_ctx);
 
 	int capturedSize = GetCapturedNum();
 	if(capturedSize < _sampleNum) {
 		return CaptureDeviceErrorTooEarly;
 	}
-	
+
 	alcCaptureSamples(_dev, data, _sampleNum);
-	
+
 	return CaptureDeviceErrorNoError;
 }
